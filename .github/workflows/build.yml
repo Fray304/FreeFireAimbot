@@ -1,0 +1,32 @@
+name: Build FreeFireAimbot.dylib
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Instalar herramientas
+        run: |
+          sudo apt update
+          sudo apt install -y git perl clang make ldid unzip
+
+      - name: Clonar Theos
+        run: |
+          git clone --recursive https://github.com/theos/theos.git ~/theos
+          echo "THEOS=~/theos" >> $GITHUB_ENV
+
+      - name: Compilar .dylib
+        run: make
+
+      - name: Subir artefacto
+        uses: actions/upload-artifact@v3
+        with:
+          name: FreeFireAimbot.dylib
+          path: obj/FreeFireAimbot.dylib
